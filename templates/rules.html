@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Study Instructions</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            padding: 40px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.2em;
+            max-width: 700px;
+        }
+
+        ul {
+            margin-top: 20px;
+            margin-bottom: 30px;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            background: #e8f0fe;
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            border-left: 5px solid #4285f4;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        a {
+            display: inline-block;
+            background-color: #4285f4;
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #3367d6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Instructions</h1>
+    <p>In this user study, you will be shown a prompt along with two 3D shape generations. 
+        You are asked to compare them based on the following criteria:</p>
+
+    <ul>
+        {% for metric in metrics %}
+        <li>{{ metric }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('start') }}">Start the Study</a>
+</body>
+</html>

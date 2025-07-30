@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Question {{ current }} of {{ total }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .prompt {
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .gif-container {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 30px;
+    }
+    .gif-block {
+      text-align: center;
+      width: 300px;
+    }
+    .gif-block img {
+      width: 100%;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    .metric-group {
+      margin-bottom: 25px;
+    }
+    .metric-label {
+      font-weight: bold;
+      margin-bottom: 8px;
+      font-size: 1.1em;
+    }
+    .options {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      font-size: 1.1em;
+    }
+    label {
+      cursor: pointer;
+    }
+    input[type="radio"] {
+      margin-right: 8px;
+      transform: scale(1.3);
+      vertical-align: middle;
+    }
+    .submit-btn {
+      display: block;
+      margin: 0 auto 40px auto;
+      background-color: #007bff;
+      color: white;
+      font-size: 1.2em;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .submit-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h2>Question {{ current }} of {{ total }}</h2>
+  <p class="prompt">Prompt: "{{ prompt }}"</p>
+
+  <form method="post" action="">
+    <div class="gif-container">
+      <div class="gif-block">
+        <img src="{{ pair[0][2] }}" alt="GIF A" />
+        <div><strong>Option A</strong></div>
+      </div>
+      <div class="gif-block">
+        <img src="{{ pair[1][2] }}" alt="GIF B" />
+        <div><strong>Option B</strong></div>
+      </div>
+    </div>
+
+    <div class="metric-group">
+      <div class="metric-label">Quality: How realistic is the GIF?</div>
+      <div class="options">
+        <label><input type="radio" name="quality" value="A" required /> Option A</label>
+        <label><input type="radio" name="quality" value="B" required /> Option B</label>
+      </div>
+    </div>
+
+    <div class="metric-group">
+      <div class="metric-label">View Consistency: How consistent is the GIF's viewpoint?</div>
+      <div class="options">
+        <label><input type="radio" name="relevance" value="A" required /> Option A</label>
+        <label><input type="radio" name="relevance" value="B" required /> Option B</label>
+      </div>
+    </div>
+
+    <div class="metric-group">
+      <div class="metric-label">Diversity: How diverse/unique is the method’s output?</div>
+      <div class="options">
+        <label><input type="radio" name="creativity" value="A" required /> Option A</label>
+        <label><input type="radio" name="creativity" value="B" required /> Option B</label>
+      </div>
+    </div>
+
+    <!-- Hidden method names -->
+    <input type="hidden" name="method_a" value="{{ pair[0][1] }}" />
+    <input type="hidden" name="method_b" value="{{ pair[1][1] }}" />
+
+    <button type="submit" class="submit-btn">Next</button>
+  </form>
+</body>
+</html>

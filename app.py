@@ -1,0 +1,139 @@
+from flask import Flask, render_template, request, redirect, url_for, session
+import random
+import uuid
+import csv
+from collections import defaultdict
+import string
+
+
+app = Flask(__name__)
+app.secret_key = "your_secret_key_here"
+
+# Define methods and prompts
+METHODS = ["asd_official", "consistent3d", "dsd", "sdi", "sds", "vsd"]
+
+PROMPTS = [
+    "pumpkin head zombie, skinny, highly detailed, photorealistic",
+    "a toy robot",
+    "Michelangelo style statue of an astronaut",
+    "A plush dragon toy",
+    "A DSLR photo of a Space Shuttle",
+    "a photo of a policeman",
+    "Mini Garden, highly detailed, 8K, HD.",
+    "A car made out of sushi.",
+]
+
+NUM_QUESTIONS = 15  # More than number of prompts
+user_state = {}  # Tracks all users' states
+
+def sanitize_filename(prompt):
+    return prompt.replace(" ", "_")
+
+@app.route("/")
+def home():
+    return redirect(url_for("rules"))
+
+@app.route("/rules")
+def rules():
+    metrics = [
+        "Quality: How realistic is the GIF?",
+        "View Consistency: How consistent are the views across frames?",
+        "Diversity: How diverse and interesting is the method's output?"
+    ]
+    return render_template("rules.html", metrics=metrics)
+
+@app.route("/start")
+def start():
+    user_id = str(uuid.uuid4())
+    questions = []
+    for _ in range(NUM_QUESTIONS):
+        prompt = random.choice(PROMPTS)
+        methods = random.sample(METHODS, 2)
+        random.shuffle(methods)  # Randomize A/B order
+        questions.append({
+            "prompt": prompt,
+            "method_a": methods[0],
+            "method_b": methods[1],
+        })
+    user_state[user_id] = {
+        "current_idx": 0,
+        "questions": questions,
+    }
+    return redirect(url_for("question", user_id=user_id))
+
+@app.route("/question/<user_id>", methods=["GET", "POST"])
+def question(user_id):
+    state = user_state.get(user_id)
+    if not state:
+        return redirect(url_for("start"))
+
+    current_idx = state["current_idx"]
+    if current_idx >= NUM_QUESTIONS:
+        return redirect(url_for("done", user_id=user_id))
+
+    question_data = state["questions"][current_idx]
+    prompt = question_data["prompt"]
+    method_a = question_data["method_a"]
+    method_b = question_data["method_b"]
+
+    if request.method == "POST":
+        choices = {
+            "quality": request.form.get("quality"),
+            "view_consistency": request.form.get("view_consistency"),
+            "diversity": request.form.get("diversity")
+        }
+
+        def map_choice(choice):
+            return method_a if choice == "A" else method_b
+
+        with open("results.csv", "a", newline="") as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow([
+                user_id,
+                prompt,
+                method_a,
+                method_b,
+                choices["quality"], map_choice(choices["quality"]),
+                choices["view_consistency"], map_choice(choices["view_consistency"]),
+                choices["diversity"], map_choice(choices["diversity"]),
+            ])
+
+        state["current_idx"] += 1
+        return redirect(url_for("question", user_id=user_id))
+
+    prompt_filename = sanitize_filename(prompt)
+    gif_a = f"/static/gif/{method_a}/{prompt_filename}.gif"
+    gif_b = f"/static/gif/{method_b}/{prompt_filename}.gif"
+
+    return render_template(
+        "question.html",
+        prompt=prompt,
+        pair=[("A", method_a, gif_a), ("B", method_b, gif_b)],
+        methods=[method_a, method_b],
+        user_id=user_id,
+        current=current_idx + 1,
+        total=NUM_QUESTIONS,
+    )
+
+@app.route("/done/<user_id>")
+def done(user_id):
+    return render_template("done.html")
+
+@app.route("/stats")
+def stats():
+    counts = defaultdict(lambda: {"quality": 0, "view_consistency": 0, "diversity": 0})
+    try:
+        with open("results.csv") as f:
+            reader = csv.reader(f)
+            for row in reader:
+                if len(row) >= 10:
+                    counts[row[5]]["quality"] += 1
+                    counts[row[7]]["view_consistency"] += 1
+                    counts[row[9]]["diversity"] += 1
+    except FileNotFoundError:
+        pass
+
+    return render_template("stats.html", counts=counts)
+
+if __name__ == "__main__":
+    app.run(debug=True)

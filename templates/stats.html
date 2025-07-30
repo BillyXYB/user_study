@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Method Statistics</title>
+</head>
+<body>
+    <h2>Method Win Counts</h2>
+    <ul>
+        {% for method, count in counts %}
+            <li>{{ method }}: {{ count }} wins</li>
+        {% endfor %}<!DOCTYPE html>
+        <html>
+        <head>
+            <title>Statistics</title>
+        </head>
+        <body>
+            <h1>Win Counts per Method and Metric</h1>
+            <table border="1" cellpadding="5">
+                <tr>
+                    <th>Method</th>
+                    <th>Quality Wins</th>
+                    <th>View Consistency Wins</th>
+                    <th>Diversity Wins</th>
+                </tr>
+                {% for method, counts in counts.items() %}
+                <tr>
+                    <td>{{ method }}</td>
+                    <td>{{ counts['quality'] }}</td>
+                    <td>{{ counts['view_consistency'] }}</td>
+                    <td>{{ counts['diversity'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </body>
+        </html>
+    </ul>
+</body><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Results</title>
+</head>
+<body>
+    <h1>Aggregate Results by Method</h1>
+    <table border="1">
+        <tr>
+            <th>Method</th>
+            <th>Quality Wins</th>
+            <th>Relevance Wins</th>
+            <th>Creativity Wins</th>
+        </tr>
+        {% for method, data in counts.items() %}
+        <tr>
+            <td>{{ method }}</td>
+            <td>{{ data.quality }}</td>
+            <td>{{ data.relevance }}</td>
+            <td>{{ data.creativity }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
+</html>
