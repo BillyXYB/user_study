@@ -23,7 +23,7 @@
       display: flex;
       justify-content: center;
       gap: 40px;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
     }
     .gif-block {
       text-align: center;
@@ -76,7 +76,6 @@
 </head>
 <body>
   <h2>Question {{ current }} of {{ total }}</h2>
-  <p class="prompt">Prompt: "{{ prompt }}"</p>
 
   <form method="post" action="">
     <div class="gif-container">
@@ -90,8 +89,11 @@
       </div>
     </div>
 
+    <!-- Prompt moved below GIFs -->
+    <p class="prompt">Prompt: "{{ prompt }}"</p>
+
     <div class="metric-group">
-      <div class="metric-label">Quality: How realistic is the GIF?</div>
+      <div class="metric-label">Quality: Which method produces textures with finer detail?</div>
       <div class="options">
         <label><input type="radio" name="quality" value="A" required /> Option A</label>
         <label><input type="radio" name="quality" value="B" required /> Option B</label>
@@ -99,7 +101,7 @@
     </div>
 
     <div class="metric-group">
-      <div class="metric-label">View Consistency: How consistent is the GIF's viewpoint?</div>
+      <div class="metric-label">View Consistency: Which result appears more consistent as the object rotates? </div>
       <div class="options">
         <label><input type="radio" name="relevance" value="A" required /> Option A</label>
         <label><input type="radio" name="relevance" value="B" required /> Option B</label>
@@ -107,7 +109,7 @@
     </div>
 
     <div class="metric-group">
-      <div class="metric-label">Diversity: How diverse/unique is the method’s output?</div>
+      <div class="metric-label">Diversity: Which method produces a more diverse set of 3D shapes?</div>
       <div class="options">
         <label><input type="radio" name="creativity" value="A" required /> Option A</label>
         <label><input type="radio" name="creativity" value="B" required /> Option B</label>
