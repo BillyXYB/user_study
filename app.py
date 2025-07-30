@@ -119,15 +119,29 @@ def question(user_id):
 def done(user_id):
     return render_template("done.html")
 
-from flask import send_file
+from flask import send_file, abort
 import os
 
-@app.route("/download")
-def download_results():
-    # Optional: add a secret token or password protection here
+ADMIN_TOKEN = "billy1234"
+
+@app.route("/download/<token>")
+def download_results(token):
+    if token != ADMIN_TOKEN:
+        return abort(403, "Unauthorized access")
     if not os.path.exists("results.csv"):
         return "No results yet.", 404
     return send_file("results.csv", as_attachment=True)
+
+
+@app.route("/delete/<token>")
+def delete_results(token):
+    if token != ADMIN_TOKEN:
+        return abort(403, "Unauthorized access")
+    try:
+        os.remove("results.csv")
+        return "Results deleted successfully."
+    except FileNotFoundError:
+        return "No results to delete."
 
 
 @app.route("/stats")
